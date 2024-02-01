@@ -1,8 +1,23 @@
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
+    private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/library";
+    private static final String USERNAME = "postgres";
+    private static final String PASSWORD = "1234";
     public static void main(String[] args) {
+        try {
+            Class.forName("org.postgresql.Driver");
+            Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM public.books");
+
+
+            connection.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
 
         Scanner in = new Scanner(System.in);
 
