@@ -1,8 +1,11 @@
+package entities;
+
 public class Book {
    private String title, isbn, genre, author;
-   private int year, quantity,clearance;
+   private int id, year, quantity,clearance;
 
-   public Book (String title, String isbn, String genre, String author, int year, int quantity, int clearance) {
+   public Book () {
+       this.id = id;
        this.title = title;
        this.isbn = isbn;
        this.genre = genre;
@@ -36,12 +39,30 @@ public class Book {
        return clearance;
     }
 
-    public void increment(){
-       this.quantity++;
-    }
-    public void decrement(){
-        this.quantity--;
+    public void setId(int id) { this.id = id; }
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void one() { this.quantity = 2;}
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+    public void setYear(int year) {
+        this.year = year;
+    }
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+    public void setClearance(int clearance){
+        this.clearance = clearance;
+    }
+
 }
