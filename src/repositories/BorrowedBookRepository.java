@@ -1,6 +1,7 @@
 package repositories;
 
 import entities.Book;
+import entities.User;
 
 import java.sql.*;
 import java.util.List;
@@ -8,7 +9,14 @@ import java.util.Scanner;
 public class BorrowedBookRepository {
     private Connection connection;
 
-    public BorrowedBookRepository(Connection connection) {this.connection = connection;}
+    private UserRepository userRepository;
+    private BookRepository bookRepository;
+
+    public BorrowedBookRepository(Connection connection) {
+        this.connection = connection;
+        this.userRepository = new UserRepository(connection);
+        this.bookRepository = new BookRepository(connection);
+    }
 
     public void giveBook(String title, String author, String id, int book_quantity) {
         String addBookQuery = "INSERT INTO book_borrowings (book_id, user_id, quantity) " +
@@ -48,44 +56,12 @@ public class BorrowedBookRepository {
     }
 
     public boolean checkClearance(String title, String id) {
-        int book_clearance = getBookClearance(title);
-        int user_clearance = getUserClearance(id);
+        int book_clearance = bookRepository.getBookClearance(title);
+        int user_clearance = userRepository.getUserClearance(id);
 
         return book_clearance <= user_clearance;
     }
 
-    public int getBookClearance(String title) {
-        int book_clearance = 0;
-        String getBookClearanceQuery = "SELECT clearance FROM books WHERE books.title = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(getBookClearanceQuery)) {
-            preparedStatement.setString(1, title);
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                book_clearance = rs.getInt("clearance");
-            }
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return book_clearance;
-    }
-
-    public int getUserClearance(String id) {
-        int user_clearance = 0;
-        String getUserClearanceQuery = "SELECT roles.clearance FROM roles INNER JOIN users ON roles.role_id = users.role_id WHERE users.id = ?";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(getUserClearanceQuery)) {
-            preparedStatement.setString(1, id);
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                user_clearance = rs.getInt("clearance");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return user_clearance;
-    }
 
     public void removeIfZero(String title, String author, String id) {
         String UpdateTableQuery = "DELETE FROM book_borrowings " +

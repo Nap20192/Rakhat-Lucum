@@ -1,32 +1,21 @@
 package repositories;
 
 import entities.Book;
-//import entities.Staff;
-//import entities.Student;
 
 import java.sql.*;
 
 public class BookRepository {
     private Connection connection;
+    private AuthorRepository authorRepository;
 
-    public BookRepository(Connection connection) {this.connection = connection;}
-
-    private void addAuthor(String authorName) {
-        String insertAuthorQuery = "INSERT INTO authors (name) VALUES (?) ON CONFLICT (name) DO NOTHING";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(insertAuthorQuery)) {
-            preparedStatement.setString(1, authorName);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public BookRepository(Connection connection) {
+        this.connection = connection;
+        this.authorRepository = new AuthorRepository(connection);
     }
-
-
 
     public void addBook(Book book) {
         String addBookQuery = "INSERT INTO books (title, isbn, year, quantity, clearance, author) VALUES (?, ?, ?, ?, ?, (SELECT author_id FROM authors WHERE name = ?))";
-        addAuthor(book.getAuthor());
+        authorRepository.addAuthor(book.getAuthor());
         try (PreparedStatement preparedStatement = connection.prepareStatement(addBookQuery)) {
             preparedStatement.setString(1, book.getTitle());
             preparedStatement.setString(2, book.getIsbn());
@@ -106,5 +95,22 @@ public class BookRepository {
             e.printStackTrace();
         }
         return quantity;
+    }
+
+    public int getBookClearance(String title) {
+        int book_clearance = 0;
+        String getBookClearanceQuery = "SELECT clearance FROM books WHERE books.title = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(getBookClearanceQuery)) {
+            preparedStatement.setString(1, title);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                book_clearance = rs.getInt("clearance");
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return book_clearance;
     }
 }

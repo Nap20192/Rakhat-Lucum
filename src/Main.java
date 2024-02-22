@@ -7,200 +7,77 @@ import java.sql.*;
 import java.util.Scanner;
 
 public class Main {
-    private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/real_library";
-    private static final String USERNAME = "postgres";
-    private static final String PASSWORD = "1234";
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        DatabaseManager databaseManager = DatabaseManager.getInstance();
+        Connection connection = databaseManager.getConnection();
 
 
-        try {
-            Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-            BookRepository bookRepository = new BookRepository(connection);
-            UserRepository ur = new UserRepository(connection);
-            UserController userController = new UserController(ur, connection);
-            GenreRepository genreRepository = new GenreRepository(connection);
-//            lib.printBooks(connection);
-            BookController bookController = new BookController(bookRepository, connection, genreRepository);
-            BorrowedBookController borrowedBookController = new BorrowedBookController(connection);
-            UserRepository userRepository = new UserRepository(connection);
+        BookRepository bookRepository = new BookRepository(connection);
+        UserRepository ur = new UserRepository(connection);
+        UserController userController = new UserController(ur, connection);
+        GenreRepository genreRepository = new GenreRepository(connection);
+        BookController bookController = new BookController(bookRepository, connection, genreRepository);
+        BorrowedBookController borrowedBookController = new BorrowedBookController(connection);
+        UserRepository userRepository = new UserRepository(connection);
 
-            createAuthorsTable(connection);
-            createBooksTable(connection);
-            createGenresTable(connection);
-            createBookGenresTable(connection);
-            createRolesTable(connection);
-            createUsersTable(connection);
-            createBookBorrowingsTable(connection);
-            fillRolesTable(connection);
-            fillGenres(connection);
+        databaseManager.createTables();
 
 
-            whileLoop : while (true) {
-                {
-                    System.out.println("1) To add a new book;");
-                    System.out.println("2) To show all available books;");
-                    System.out.println("3) To add a new user;");
-                    System.out.println("4) To give a certain book to a certain user;");
-                    System.out.println("5) To return a book back to the library from user.");
-                    System.out.println("6) To show all available users");
-                    System.out.println("7) Exit");
+
+
+
+        whileLoop : while (true) {
+            {
+                System.out.println("1) To add a new book;");
+                System.out.println("2) To show all available books;");
+                System.out.println("3) To add a new user;");
+                System.out.println("4) To give a certain book to a certain user;");
+                System.out.println("5) To return a book back to the library from user.");
+                System.out.println("6) To show all available users");
+                System.out.println("7) Exit");
+            }
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            switch (choice) {
+                case 1: {
+                    bookController.addBook(scanner);
+                    break;
                 }
-                int choice = scanner.nextInt();
-                scanner.nextLine();
-                switch (choice) {
-                    case 1: {
-                        bookController.addBook(scanner);
-                        break;
-                    }
-                    case 2: {
-                        bookRepository.printBooks();
-                        break;
-                    }
-                    case 3: {
-                        userController.addUser(scanner);
-                        break;
-                    }
-                    case 4: {
-                        borrowedBookController.giveBook(scanner);
-                        break;
-                    }
-                    case 5: {
-                        borrowedBookController.returnBook(scanner);
-                        break;
-                    }
-                    case 6: {
-                        userRepository.printUsers();
-                        break;
-                    }
-                    case 7: {
-                        break whileLoop;
-                    }
+                case 2: {
+                    bookRepository.printBooks();
+                    break;
+                }
+                case 3: {
+                    userController.addUser(scanner);
+                    break;
+                }
+                case 4: {
+                    borrowedBookController.giveBook(scanner);
+                    break;
+                }
+                case 5: {
+                    borrowedBookController.returnBook(scanner);
+                    break;
+                }
+                case 6: {
+                    userRepository.printUsers();
+                    break;
+                }
+                case 7: {
+                    break whileLoop;
                 }
             }
-
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
         }
+
+
 
     }
 
 
 
-    private static void createBooksTable(Connection connection) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
-            String createTableQuery = "CREATE TABLE IF NOT EXISTS books ("
-                    + "book_id SERIAL PRIMARY KEY,"
-                    + "title VARCHAR(100) NOT NULL UNIQUE,"
-                    + "isbn VARCHAR(100) NOT NULL,"
-                    + "author INT REFERENCES authors(author_id),"
-                    + "year INT NOT NULL,"
-                    + "quantity INT CHECK (quantity >= 0),"
-                    + "clearance INT NOT NULL)";
 
-            statement.executeUpdate(createTableQuery);
-        }
-    }
-
-    private static void createAuthorsTable(Connection connection) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
-            String createTableQuery = "CREATE TABLE IF NOT EXISTS authors ("
-                    + "author_id SERIAL PRIMARY KEY,"
-                    + "name VARCHAR(100) UNIQUE)";
-
-            statement.executeUpdate(createTableQuery);
-        }
-    }
-
-    private static void createGenresTable(Connection connection) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
-            String createTableQuery = "CREATE TABLE IF NOT EXISTS genres ("
-                    + "genre_id SERIAL PRIMARY KEY,"
-                    + "name VARCHAR(100) UNIQUE)";
-
-            statement.executeUpdate(createTableQuery);
-        }
-    }
-
-    private static void createBookGenresTable(Connection connection) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
-            String createTableQuery = "CREATE TABLE IF NOT EXISTS book_genres ("
-                    + "book_id INT REFERENCES books(book_id),"
-                    + "genre_id INT REFERENCES genres(genre_id),"
-                    + "PRIMARY KEY (book_id, genre_id))";
-
-            statement.executeUpdate(createTableQuery);
-        }
-    }
-
-    private static void fillGenres(Connection connection) throws SQLException{
-        try (Statement statement = connection.createStatement()) {
-            String insertGenresQuery = "INSERT INTO genres (name) VALUES " +
-                    "('Fantasy')," +
-                    "('Sci-fi')," +
-                    "('Non-fiction')," +
-                    "('Literary fiction')," +
-                    "('Self-help')," +
-                    "('Academic')," +
-                    "('High fantasy')," +
-                    "('Low fantasy')," +
-                    "('Dystopian')," +
-                    "('Romance')," +
-                    "('Thriller')," +
-                    "('Comedy')," +
-                    "('Poetry')," +
-                    "('Horror') ON CONFLICT (name) DO NOTHING;";
-
-            statement.executeUpdate(insertGenresQuery);
-        }
-    }
-
-    private static void createUsersTable(Connection connection) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
-            String createTableQuery = "CREATE TABLE IF NOT EXISTS users ("
-                    + "user_id SERIAL PRIMARY KEY,"
-                    + "id VARCHAR(100) NOT NULL UNIQUE,"
-                    + "name VARCHAR(100) NOT NULL,"
-                    + "user_group VARCHAR(100),"
-                    + "role_id INT NOT NULL REFERENCES roles(role_id))";
-
-            statement.executeUpdate(createTableQuery);
-        }
-    }
-
-    private static void createRolesTable(Connection connection) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
-            String createTableQuery = "CREATE TABLE IF NOT EXISTS roles ("
-                    + "role_id SERIAL PRIMARY KEY,"
-                    + "name VARCHAR(100) UNIQUE,"
-                    + "clearance INT NOT NULL)";
-
-            statement.executeUpdate(createTableQuery);
-        }
-    }
-
-    private static void fillRolesTable(Connection connection) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
-            String insertGenresQuery = "INSERT INTO roles (name, clearance) VALUES " +
-                    "('Staff', 2)," +
-                    "('Student', 1) ON CONFLICT (name) DO NOTHING;";
-
-            statement.executeUpdate(insertGenresQuery);
-        }
-    }
-
-    private static void createBookBorrowingsTable(Connection connection) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
-            String createTableQuery = "CREATE TABLE IF NOT EXISTS book_borrowings ("
-                    + "book_id INT REFERENCES books(book_id),"
-                    + "user_id INT REFERENCES users(user_id),"
-                    + "quantity INT NOT NULL CHECK (quantity >= 0),"
-                    + "PRIMARY KEY (book_id, user_id))";
-
-            statement.executeUpdate(createTableQuery);
-        }
-    }
 }
 
 

@@ -46,4 +46,20 @@ public class UserRepository {
         }
     }
 
+    public int getUserClearance(String id) {
+        int user_clearance = 0;
+        String getUserClearanceQuery = "SELECT roles.clearance FROM roles INNER JOIN users ON roles.role_id = users.role_id WHERE users.id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(getUserClearanceQuery)) {
+            preparedStatement.setString(1, id);
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                user_clearance = rs.getInt("clearance");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user_clearance;
+    }
+
 }
