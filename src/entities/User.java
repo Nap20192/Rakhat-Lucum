@@ -1,12 +1,8 @@
 package entities;
 
 public class User {
-    int clearance;
-    String name, group, role, id;
-
-    public User(){
-
-    }
+    private int clearance;
+    private String name, group, role, id;
     public String getId() {
         return id;
     }
@@ -22,19 +18,45 @@ public class User {
     public int getClearance(){
         return clearance;
     }
-
-    public void setId(String id) { this.id = id; }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public void setGroup(String group) {
-        this.group = group;
-    }
-    public void setRole(String role) {
-        this.role = role;
-    }
-    public void setClearance(int clearance){
-        this.clearance = clearance;
+    private User(Builder builder){
+        this.id=builder.id;
+        this.name= builder.name;
+        this.group= builder.group;
+        this.role=builder.role;
+        this.clearance=builder.clearance;
     }
 
+    public static class Builder {
+        private String id;
+        private String name;
+        private String group;
+        private  String role;
+        private  int clearance;
+
+        public Builder id(String id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder group(String group) {
+            this.group = group;
+            return this;
+        }
+        public Builder role(String role) {
+            this.role = role;
+            return this;
+        }
+        public Builder clearance(int clearance) {
+            this.clearance = clearance;
+            return this;
+        }
+        public User build() {
+            return new User(this);
+        }
+    }
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import entities.User;
 import repositories.GenreRepository;
 import repositories.BookRepository;
 import entities.Book;
@@ -33,8 +34,6 @@ public class BookController {
         List<Integer> selectedGenres = new ArrayList<>();
         genreRepository.getUserSelectedGenres(selectedGenres);
 
-
-
         System.out.print("Enter year: ");
         int year = scanner.nextInt();
 
@@ -43,18 +42,16 @@ public class BookController {
 
         System.out.print("Enter clearance: ");
         int clearance = scanner.nextInt();
-
-
-        Book book = new Book();
-        book.setTitle(title);
-        book.setIsbn(isbn);
-        book.setYear(year);
-        book.setQuantity(quantity);
-        book.setClearance(clearance);
-        book.setAuthor(author);
-
+        Book book = new Book.Builder()
+                .title(title)
+                .author(author)
+                .isbn(isbn)
+                .year(year)
+                .quantity(quantity)
+                .clearance(clearance)
+                .build();
         lib.addBook(book);
-        genreRepository.insertGenresIntoDatabase(selectedGenres, title);
+        System.out.println("User created successfully.");
     }
 
 
