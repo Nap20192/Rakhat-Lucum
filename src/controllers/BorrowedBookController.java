@@ -8,14 +8,17 @@ import repositories.BorrowedBookRepository;
 
 public class BorrowedBookController {
     private Connection connection;
+    private BorrowedBookRepository borrowedBookRepository;
+    private BookRepository bookRepository;
 
-    public BorrowedBookController(Connection connection) {
-        this.connection = connection;
+
+    public BorrowedBookController() {
+        borrowedBookRepository=BorrowedBookRepository.getInstance();
+        bookRepository=BookRepository.getInstance();
     }
 
     public void giveBook(Scanner scanner) {
-        BorrowedBookRepository borrowedBookRepository = new BorrowedBookRepository(connection);
-        BookRepository bookRepository = new BookRepository(connection);
+
 
         System.out.println("Enter title: ");
         String title = scanner.nextLine();
@@ -48,9 +51,6 @@ public class BorrowedBookController {
     }
 
     public void returnBook(Scanner scanner) {
-        BorrowedBookRepository borrowedBookRepository = new BorrowedBookRepository(connection);
-        BookRepository bookRepository = new BookRepository(connection);
-
         System.out.println("Enter title: ");
         String title = scanner.nextLine();
         System.out.println("Enter author: ");

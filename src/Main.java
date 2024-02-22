@@ -8,15 +8,12 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        Connection connection = Database.connect();
+        Database.getInstance();
+        Connection connection = Database.getConnection();
         Database.init();
-        BookRepository bookRepository = new BookRepository(connection);
-        UserRepository ur = new UserRepository(connection);
-        UserController userController = new UserController(ur, connection);
-        GenreRepository genreRepository = new GenreRepository(connection);
-        BookController bookController = new BookController(bookRepository, connection, genreRepository);
-        BorrowedBookController borrowedBookController = new BorrowedBookController(connection);
-        UserRepository userRepository = new UserRepository(connection);
+        UserController userController = new UserController();
+        BookController bookController = new BookController();
+        BorrowedBookController borrowedBookController = new BorrowedBookController();
         Scanner scanner = new Scanner(System.in);
         whileLoop:while (true) {
             {
@@ -36,7 +33,7 @@ public class Main {
                     break;
                 }
                 case 2: {
-                    bookRepository.printBooks();
+                    bookController.showBooks();
                     break;
                 }
                 case 3: {
@@ -52,7 +49,7 @@ public class Main {
                     break;
                 }
                 case 6: {
-                    userRepository.printUsers();
+                    userController.showUsers();
                     break;
                 }
                 case 7: {

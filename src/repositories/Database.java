@@ -1,3 +1,5 @@
+package repositories;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -6,16 +8,29 @@ public class Database {
     private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/real_library";
     private static final String USERNAME = "postgres";
     private static final String PASSWORD = "1234";
-    public static Connection connect() throws SQLException {
+    private static Database instance;
+    private static Connection connection;
+
+    private Database() {
         try {
             Class.forName("org.postgresql.Driver");
-            return DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-        } catch (ClassNotFoundException e) {
-            throw new SQLException("Failed to load PostgreSQL JDBC driver", e);
+            connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
         }
     }
+    public static Database getInstance() {
+        if (instance == null) {
+            instance = new Database();
+        }
+        return instance;
+    }
+    public static Connection getConnection() {
+        return connection;
+    }
+
     public static void init() {
-        try (Connection connection = connect()) {
+        try {
             createAuthorsTable(connection);
             createBooksTable(connection);
             createGenresTable(connection);
@@ -23,12 +38,10 @@ public class Database {
             createRolesTable(connection);
             createUsersTable(connection);
             createBookBorrowingsTable(connection);
-
             fillRolesTable(connection);
             fillGenres(connection);
-
-            connection.close();
-        } catch (SQLException e){
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
 }

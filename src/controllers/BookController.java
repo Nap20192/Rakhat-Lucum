@@ -15,11 +15,13 @@ public class BookController {
     private Connection connection;
     private GenreRepository genreRepository;
 
-    public BookController(BookRepository lib, Connection connection, GenreRepository genreRepository) {
-        this.lib = lib;
-        this.connection = connection;
-        this.genreRepository = genreRepository;
-    }
+   public BookController(){
+       lib=BookRepository.getInstance();
+       genreRepository=GenreRepository.getInstance();
+   }
+   public void  showBooks(){
+       lib.printBooks();
+   }
 
     public void addBook(Scanner scanner) {
         System.out.print("Enter title: ");
@@ -53,8 +55,5 @@ public class BookController {
         lib.addBook(book);
         System.out.println("User created successfully.");
     }
-
-
-
 
 }

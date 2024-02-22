@@ -8,9 +8,16 @@ import java.sql.*;
 
 public class BookRepository {
     private Connection connection;
-
-    public BookRepository(Connection connection) {this.connection = connection;}
-
+    private static BookRepository instance;
+    private BookRepository()  {
+        connection=Database.getConnection();
+    }
+    public static synchronized BookRepository getInstance(){
+        if (instance == null) {
+            instance = new BookRepository();
+        }
+        return instance;
+    }
     private void addAuthor(String authorName) {
         String insertAuthorQuery = "INSERT INTO authors (name) VALUES (?) ON CONFLICT (name) DO NOTHING";
 

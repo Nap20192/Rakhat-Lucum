@@ -6,11 +6,17 @@ import java.util.Scanner;
 
 public class GenreRepository {
     private Connection connection;
-
-    // Corrected constructor
-    public GenreRepository(Connection connection) {
-        this.connection = connection;
+    private static GenreRepository instance;
+    private GenreRepository()  {
+        connection=Database.getConnection();
     }
+    public static synchronized GenreRepository getInstance(){
+        if (instance == null) {
+            instance = new GenreRepository();
+        }
+        return instance;
+    }
+
     public void getUserSelectedGenres(List<Integer> selectedGenres) {
         try {
             Scanner scanner = new Scanner(System.in);

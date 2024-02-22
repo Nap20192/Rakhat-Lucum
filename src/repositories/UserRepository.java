@@ -5,13 +5,19 @@ import entities.User;
 import java.sql.*;
 
 public class UserRepository {
-    private BookRepository lib;
+    private static BookRepository lib;
+    private static UserRepository instance;
     private Connection connection;
-
-
-    public UserRepository(Connection connection) {
-        this.connection = connection;
+    private UserRepository()  {
+        connection=Database.getConnection();
     }
+    public static synchronized UserRepository getInstance(){
+        if (instance == null) {
+            instance = new UserRepository();
+        }
+        return instance;
+    }
+
     public void addUser(User user) {
         String addBookQuery = "INSERT INTO users (id, name, user_group, role_id) VALUES (?, ?, ?, (SELECT role_id FROM roles WHERE name = ?))";
         try (PreparedStatement preparedStatement = connection.prepareStatement(addBookQuery)) {
@@ -27,6 +33,7 @@ public class UserRepository {
         }
 
     }
+
 
     public void printUsers() {
         final String ANSI_BLUE = "\u001B[32m";

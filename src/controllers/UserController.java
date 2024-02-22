@@ -4,6 +4,7 @@ import entities.User;
 import repositories.UserRepository;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Objects;
 import java.util.Scanner;
 
@@ -11,9 +12,11 @@ public class UserController {
     private UserRepository ur;
     private Connection connection;
 
-    public UserController(UserRepository ur, Connection connection) {
-        this.ur = ur;
-        this.connection = connection;
+    public UserController() throws SQLException {
+        ur = UserRepository.getInstance();
+    }
+    public void showUsers(){
+        ur.printUsers();
     }
 
     public void addUser(Scanner scanner) {

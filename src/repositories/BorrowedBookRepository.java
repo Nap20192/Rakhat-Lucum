@@ -8,8 +8,16 @@ import java.util.Scanner;
 public class BorrowedBookRepository {
     private Connection connection;
 
-    public BorrowedBookRepository(Connection connection) {this.connection = connection;}
-
+    private static BorrowedBookRepository instance;
+    private BorrowedBookRepository()  {
+        connection=Database.getConnection();
+    }
+    public static synchronized BorrowedBookRepository getInstance(){
+        if (instance == null) {
+            instance = new BorrowedBookRepository();
+        }
+        return instance;
+    }
     public void giveBook(String title, String author, String id, int book_quantity) {
         String addBookQuery = "INSERT INTO book_borrowings (book_id, user_id, quantity) " +
                 "VALUES ((SELECT book_id FROM books WHERE title = ? " +
