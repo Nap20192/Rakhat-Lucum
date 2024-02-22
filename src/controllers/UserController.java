@@ -17,6 +17,7 @@ public class UserController {
     }
 
     public void addUser(Scanner scanner) {
+        String group=null;
         System.out.print("Enter Role: ");
         String role = scanner.nextLine();
 
@@ -26,22 +27,17 @@ public class UserController {
         System.out.print("Enter name: ");
         String name = scanner.nextLine();
 
-
-        User user = new User();
-        user.setId(id);
-        user.setName(name);
-        user.setRole(role);
-
         if (Objects.equals(role, "Student")) {
             System.out.print("Enter group: ");
-            String group = scanner.nextLine();
-            user.setGroup(group);
+            group = scanner.nextLine();
         }
-
-
-
-
-
+        User user = new User.Builder()
+                .id(id)
+                .name(name)
+                .group(group)
+                .role(role)
+                .build();
         ur.addUser(user);
+        System.out.println("User created successfully.");
     }
 }
