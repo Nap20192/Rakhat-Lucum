@@ -18,7 +18,8 @@ public class User {
     public int getClearance(){
         return clearance;
     }
-    private User(Builder builder){
+
+    User(Builder builder){
         this.id=builder.id;
         this.name= builder.name;
         this.group= builder.group;
@@ -59,4 +60,25 @@ public class User {
             return new User(this);
         }
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public void setClearance(int clearance) {
+        this.clearance = clearance;
+    }
 }
+

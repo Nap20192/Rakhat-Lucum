@@ -11,7 +11,6 @@ public class BorrowedBookController {
     private BorrowedBookRepository borrowedBookRepository;
     private BookRepository bookRepository;
 
-
     public BorrowedBookController() {
         borrowedBookRepository=BorrowedBookRepository.getInstance();
         bookRepository=BookRepository.getInstance();
@@ -28,13 +27,17 @@ public class BorrowedBookController {
         String id = scanner.nextLine();
         System.out.println("Enter quantity: ");
         int quantity = scanner.nextInt();
+        if(GiveBookCheck(title,author,id,quantity)){
+            borrowedBookRepository.giveBook(title, author, id, quantity);
+            bookRepository.subQuantity(title, author, quantity);
+            System.out.println("Book successfully given.");
+        }
+    }
 
-
+    private Boolean GiveBookCheck(String title,String author,String id,int quantity){
         if (bookRepository.checkIfNotEnoughBooks(title, author, quantity)) {
             if (borrowedBookRepository.checkClearance(title, id)) {
-                borrowedBookRepository.giveBook(title, author, id, quantity);
-                bookRepository.subQuantity(title, author, quantity);
-                System.out.println("Book successfully given.");
+                return true;
             }
 
             else {
@@ -45,9 +48,7 @@ public class BorrowedBookController {
         else {
             System.out.println("There aren't enough books.");
         }
-
-
-
+        return false;
     }
 
     public void returnBook(Scanner scanner) {
@@ -59,18 +60,20 @@ public class BorrowedBookController {
         String id = scanner.nextLine();
         System.out.println("Enter quantity: ");
         int quantity = scanner.nextInt();
-
-        if (borrowedBookRepository.checkIfNotEnoughBooks(title, author, id, quantity)) {
+        if(returnbookCheck(title,author,id,quantity)){
             borrowedBookRepository.returnBook(title, author, id, quantity);
             bookRepository.addQuantity(title, author, quantity);
             if (borrowedBookRepository.checkIfZero(title, author, id)) {borrowedBookRepository.removeIfZero(title, author, id);}
             System.out.println("Book successfully returned.");
         }
+    }
+    private Boolean returnbookCheck(String title,String author,String id,int quantity){
+        if (borrowedBookRepository.checkIfNotEnoughBooks(title, author, id, quantity)) {
+           return true;
+        }
         else {
             System.out.println("There aren't enough books.");
         }
-
-
-
+        return false;
     }
 }

@@ -1,5 +1,6 @@
 package controllers;
 
+import entities.Student;
 import entities.User;
 import repositories.UserRepository;
 
@@ -33,6 +34,11 @@ public class UserController {
         if (Objects.equals(role, "Student")) {
             System.out.print("Enter group: ");
             group = scanner.nextLine();
+            Student student = new Student.Builder()
+                    .id(id)
+                    .name(name)
+                    .group(group)
+                    .build();
         }
         User user = new User.Builder()
                 .id(id)

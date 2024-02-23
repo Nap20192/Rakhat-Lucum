@@ -1,5 +1,6 @@
 package repositories;
 
+import entities.Student;
 import entities.User;
 
 import java.sql.*;
@@ -7,10 +8,12 @@ import java.sql.*;
 public class UserRepository {
     private static BookRepository lib;
     private static UserRepository instance;
-    private Connection connection;
-    private UserRepository()  {
+     static Connection connection;
+    protected UserRepository()
+    {
         connection=Database.getConnection();
     }
+
     public static synchronized UserRepository getInstance(){
         if (instance == null) {
             instance = new UserRepository();
@@ -25,15 +28,12 @@ public class UserRepository {
             preparedStatement.setString(2, user.getName());
             preparedStatement.setString(3, user.getGroup());
             preparedStatement.setString(4, user.getRole());
-
             preparedStatement.executeUpdate();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
     }
-
 
     public void printUsers() {
         final String ANSI_BLUE = "\u001B[32m";
@@ -47,10 +47,12 @@ public class UserRepository {
                 System.out.println(ANSI_BLUE + "\"" + rs.getString(1) + "\"" + ANSI_RESET + " " + rs.getString(2) + " " + rs.getString(3));
             }
 
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
 }
+
+
+
