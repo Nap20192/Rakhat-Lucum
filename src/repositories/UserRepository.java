@@ -1,6 +1,5 @@
 package repositories;
 
-import entities.Student;
 import entities.User;
 
 import java.sql.*;
@@ -11,7 +10,7 @@ public class UserRepository {
      static Connection connection;
     protected UserRepository()
     {
-        connection=Database.getConnection();
+        connection= DatabaseManager.getConnection();
     }
 
     public static synchronized UserRepository getInstance(){

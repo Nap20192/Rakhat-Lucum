@@ -1,16 +1,13 @@
 package repositories;
 
-import entities.Book;
-
 import java.sql.*;
-import java.util.List;
-import java.util.Scanner;
+
 public class BorrowedBookRepository {
     private Connection connection;
 
     private static BorrowedBookRepository instance;
     private BorrowedBookRepository()  {
-        connection=Database.getConnection();
+        connection= DatabaseManager.getConnection();
     }
     public static synchronized BorrowedBookRepository getInstance(){
         if (instance == null) {

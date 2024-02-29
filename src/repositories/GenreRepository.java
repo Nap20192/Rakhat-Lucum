@@ -8,7 +8,7 @@ public class GenreRepository {
     private Connection connection;
     private static GenreRepository instance;
     private GenreRepository()  {
-        connection=Database.getConnection();
+        connection= DatabaseManager.getConnection();
     }
     public static synchronized GenreRepository getInstance(){
         if (instance == null) {

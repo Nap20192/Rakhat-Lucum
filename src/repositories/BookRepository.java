@@ -10,7 +10,7 @@ public class BookRepository {
     private Connection connection;
     private static BookRepository instance;
     private BookRepository()  {
-        connection=Database.getConnection();
+        connection= DatabaseManager.getConnection();
     }
     public static synchronized BookRepository getInstance(){
         if (instance == null) {

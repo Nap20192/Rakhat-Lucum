@@ -8,9 +8,9 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws SQLException {
-        Database.getInstance();
-        Connection connection = Database.getConnection();
-        Database.init();
+        DatabaseManager.getInstance();
+        Connection connection = DatabaseManager.getConnection();
+        DatabaseManager.init();
         UserController userController = new UserController();
         BookController bookController = new BookController();
         BorrowedBookController borrowedBookController = new BorrowedBookController();

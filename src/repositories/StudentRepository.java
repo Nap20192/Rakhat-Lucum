@@ -39,7 +39,7 @@ public class StudentRepository extends UserRepository {
         final String ANSI_RESET = "\u001B[0m";
         try {
             Statement statement = connection.createStatement();
-            String getUsersQuery = "SELECT users.id, users.name, roles.name FROM users JOIN roles ON roles.role_id = users.role_id";
+            String getUsersQuery = "SELECT users.id, users.name, roles.name FROM users JOIN roles ON roles.role_id = users.role_id WHERE roles.name = 'STUDENT'";
             ResultSet rs = statement.executeQuery(getUsersQuery);
 
             while (rs.next()) {

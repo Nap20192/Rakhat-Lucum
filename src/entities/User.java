@@ -27,6 +27,29 @@ public class User {
         this.clearance=builder.clearance;
     }
 
+    public class UserFactory {
+        public static User createUser(String role, String id, String name, String group) {
+            switch (role.toUpperCase()) {
+                case "STUDENT":
+                    return new Student.Builder()
+                            .id(id)
+                            .name(name)
+                            .group(group)
+                            .role(role)
+                            .build();
+                case "STAFF":
+                    return new Staff.Builder()
+                            .id(id)
+                            .name(name)
+                            .role(role)
+                            .build();
+                // Add more cases for other user types if needed
+                default:
+                    throw new IllegalArgumentException("Invalid role: " + role);
+            }
+        }
+    }
+
     public static class Builder {
         private String id;
         private String name;

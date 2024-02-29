@@ -2,6 +2,8 @@ package controllers;
 
 import entities.Student;
 import entities.User;
+import repositories.StaffRepository;
+import repositories.StudentRepository;
 import repositories.UserRepository;
 
 import java.sql.Connection;
@@ -11,10 +13,14 @@ import java.util.Scanner;
 
 public class UserController {
     private UserRepository ur;
+    private StudentRepository studentRepository;
+    private StaffRepository staffRepository;
     private Connection connection;
 
     public UserController() throws SQLException {
         ur = UserRepository.getInstance();
+        studentRepository = StudentRepository.getInstance();
+        staffRepository = StaffRepository.getInstance();
     }
     public void showUsers(){
         ur.printUsers();
@@ -34,19 +40,21 @@ public class UserController {
         if (Objects.equals(role, "Student")) {
             System.out.print("Enter group: ");
             group = scanner.nextLine();
-            Student student = new Student.Builder()
-                    .id(id)
-                    .name(name)
-                    .group(group)
-                    .build();
+            User student = User.UserFactory.createUser(role, id, name, group);
+            studentRepository.addUser(student);
         }
-        User user = new User.Builder()
-                .id(id)
-                .name(name)
-                .group(group)
-                .role(role)
-                .build();
-        ur.addUser(user);
+
+        else if (Objects.equals(role, "Staff")) {
+            group = "_STAFF_";
+            User staff = User.UserFactory.createUser(role, id, name, group);
+            staffRepository.addUser(staff);
+        }
+
+        else { System.out.print("There is no such role."); }
+
+
+
+
         System.out.println("User created successfully.");
     }
 }
