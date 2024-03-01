@@ -19,8 +19,6 @@ public class UserController {
 
     public UserController() throws SQLException {
         ur = UserRepository.getInstance();
-        studentRepository = StudentRepository.getInstance();
-        staffRepository = StaffRepository.getInstance();
     }
     public void showUsers(){
         ur.printUsers();
@@ -40,19 +38,15 @@ public class UserController {
         if (Objects.equals(role, "Student")) {
             System.out.print("Enter group: ");
             group = scanner.nextLine();
-            User student = User.UserFactory.createUser(role, id, name, group);
-            studentRepository.addUser(student);
+            ur.addUser(id,name,group,role);
         }
-
         else if (Objects.equals(role, "Staff")) {
             group = "_STAFF_";
-            User staff = User.UserFactory.createUser(role, id, name, group);
-            staffRepository.addUser(staff);
+            ur.addUser(id,name,group,role);
+
         }
 
         else { System.out.print("There is no such role."); }
-
-
 
 
         System.out.println("User created successfully.");

@@ -1,14 +1,17 @@
 package repositories;
 
+import entities.Staff;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class StudentRepository extends UserRepository {
+public class StaffRepository extends UserRepository {
     @Override
     public void addUser(String id, String name, String group, String role) {
         super.addUser(id, name, group, role);
+
         String addstudent = "INSERT INTO users (id, name, user_group, role_id) VALUES (?, ?, ?, (SELECT role_id FROM roles WHERE name = ?))";
         try (PreparedStatement preparedStatement = connection.prepareStatement(addstudent)) {
             preparedStatement.setString(1, id);
@@ -18,9 +21,8 @@ public class StudentRepository extends UserRepository {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-    }
-    @Override
+        }    }
+@Override
     public void printUsers() {
         final String ANSI_YELLOW = "\u001B[33m";
         final String ANSI_RESET = "\u001B[0m";
@@ -32,6 +34,7 @@ public class StudentRepository extends UserRepository {
             while (rs.next()) {
                 System.out.println(ANSI_YELLOW + "\"" + rs.getString(1) + "\"" + ANSI_RESET + " " + rs.getString(2) + " " + rs.getString(3));
             }
+
 
         } catch (SQLException e) {
             e.printStackTrace();

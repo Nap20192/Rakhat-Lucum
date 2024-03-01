@@ -7,7 +7,7 @@ public class Staff extends User {
     public static class Builder extends User.Builder {
         public Builder() {
             role("STAFF");
-            clearance(1);
+            clearance(2);
         }
         @Override
         public Staff build() {

@@ -56,10 +56,16 @@ public class BookRepository {
         final String ANSI_RESET = "\u001B[0m";
         try {
             Statement statement = connection.createStatement();
-            String getBooksQuery = "SELECT books.title, authors.name, books.quantity FROM books JOIN authors ON authors.author_id = books.author";
+            String getBooksQuery = "SELECT books.title, authors.name, books.quantity, genres.name AS genre FROM books "
+                    + "JOIN authors ON authors.author_id = books.author "
+                    + "LEFT JOIN book_genres ON books.book_id = book_genres.book_id "
+                    + "LEFT JOIN genres ON book_genres.genre_id = genres.genre_id";
+
             ResultSet rs = statement.executeQuery(getBooksQuery);
             while (rs.next()) {
-                System.out.println(ANSI_BLUE + "\"" + rs.getString(1) + "\"" + ANSI_RESET + " by " + rs.getString(2) + " : " + rs.getString(3));
+                System.out.println(ANSI_BLUE + "\"" + rs.getString("title") + "\"" + ANSI_RESET +
+                        " by " + rs.getString("name") + " : " + rs.getString("quantity") +
+                        " copies, Genre: " + rs.getString("genre"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
